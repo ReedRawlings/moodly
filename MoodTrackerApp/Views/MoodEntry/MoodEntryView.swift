@@ -16,11 +16,11 @@ struct MoodEntryView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 32) {
-                    // Mood Picker
+                VStack(spacing: 28) {
+                    // HERO: Mood Picker - Most important
                     MoodPickerView(selectedMood: $selectedMood)
 
-                    // Activity Selector
+                    // HERO: Activity Selector - Second most important
                     if let profile = userProfiles.first {
                         ActivitySelectorView(
                             trackingCategories: profile.trackingCategories,
@@ -28,63 +28,109 @@ struct MoodEntryView: View {
                         )
                     }
 
-                    // Journal Prompt
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("How are you really doing today?")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                    // Divider for visual hierarchy
+                    Divider()
+                        .padding(.horizontal)
 
-                        TextField("Write your thoughts...", text: $journalText, axis: .vertical)
-                            .textFieldStyle(.roundedBorder)
-                            .lineLimit(5...10)
-                    }
-                    .padding(.horizontal)
-
-                    // Optional Details Toggle
-                    Button {
-                        withAnimation {
-                            showingOptionalDetails.toggle()
-                        }
-                    } label: {
-                        HStack {
-                            Text("Add more details")
-                            Spacer()
-                            Image(systemName: showingOptionalDetails ? "chevron.up" : "chevron.down")
-                        }
-                        .padding()
-                        .background(Color.gray.opacity(0.1))
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                    }
-                    .padding(.horizontal)
-
-                    if showingOptionalDetails {
-                        VStack(spacing: 16) {
-                            // Sleep hours
-                            VStack(alignment: .leading) {
-                                Text("Sleep hours")
+                    // Context-aware sleep tracking (show prominently if morning)
+                    if shouldShowSleepProminent {
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                Image(systemName: "bed.double")
+                                    .foregroundStyle(.blue)
+                                Text("How did you sleep?")
                                     .font(.subheadline)
+                                    .fontWeight(.medium)
+                            }
+
+                            HStack(spacing: 12) {
                                 TextField("Hours", value: $sleepHours, format: .number)
                                     .textFieldStyle(.roundedBorder)
                                     .keyboardType(.decimalPad)
-                            }
+                                    .frame(width: 100)
 
-                            // Energy level
-                            VStack(alignment: .leading) {
-                                Text("Energy level")
+                                Text("hours")
                                     .font(.subheadline)
-                                Picker("Energy", selection: $energyLevel) {
-                                    Text("Not set").tag(nil as Int?)
-                                    ForEach(1...5, id: \.self) { level in
-                                        Text("\(level)").tag(level as Int?)
-                                    }
-                                }
-                                .pickerStyle(.segmented)
+                                    .foregroundStyle(.secondary)
+
+                                Spacer()
                             }
                         }
                         .padding(.horizontal)
+                        .padding(.vertical, 8)
+                        .background(Color.blue.opacity(0.05))
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .padding(.horizontal)
                     }
 
-                    // Save Button
+                    // Subtle journal prompt - optional, less prominent
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Any thoughts? (optional)")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+
+                        TextField("Write your thoughts...", text: $journalText, axis: .vertical)
+                            .textFieldStyle(.roundedBorder)
+                            .lineLimit(3...6)
+                    }
+                    .padding(.horizontal)
+
+                    // Optional Details - collapsed by default
+                    if !shouldShowSleepProminent || energyLevel != nil || showingOptionalDetails {
+                        VStack(spacing: 0) {
+                            Button {
+                                withAnimation {
+                                    showingOptionalDetails.toggle()
+                                }
+                            } label: {
+                                HStack {
+                                    Text("More details")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                    Spacer()
+                                    Image(systemName: showingOptionalDetails ? "chevron.up" : "chevron.down")
+                                        .font(.caption)
+                                        .foregroundStyle(.tertiary)
+                                }
+                                .padding(.horizontal)
+                                .padding(.vertical, 8)
+                            }
+
+                            if showingOptionalDetails {
+                                VStack(spacing: 16) {
+                                    // Sleep (if not already shown)
+                                    if !shouldShowSleepProminent {
+                                        VStack(alignment: .leading, spacing: 6) {
+                                            Text("Sleep hours")
+                                                .font(.caption)
+                                                .foregroundStyle(.secondary)
+                                            TextField("Hours", value: $sleepHours, format: .number)
+                                                .textFieldStyle(.roundedBorder)
+                                                .keyboardType(.decimalPad)
+                                        }
+                                    }
+
+                                    // Energy level
+                                    VStack(alignment: .leading, spacing: 6) {
+                                        Text("Energy level")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                        Picker("Energy", selection: $energyLevel) {
+                                            Text("Not set").tag(nil as Int?)
+                                            ForEach(1...5, id: \.self) { level in
+                                                Text("\(level)").tag(level as Int?)
+                                            }
+                                        }
+                                        .pickerStyle(.segmented)
+                                    }
+                                }
+                                .padding(.horizontal)
+                                .padding(.top, 8)
+                            }
+                        }
+                    }
+
+                    // Save Button - prominent CTA
                     Button {
                         saveMoodEntry()
                     } label: {
@@ -98,11 +144,18 @@ struct MoodEntryView: View {
                     }
                     .disabled(selectedMood == nil)
                     .padding(.horizontal)
+                    .padding(.top, 8)
                 }
                 .padding(.vertical)
             }
-            .navigationTitle("Mood Entry")
+            .navigationTitle("Check In")
         }
+    }
+
+    /// Show sleep tracking prominently if it's early morning (before 11am)
+    private var shouldShowSleepProminent: Bool {
+        let hour = Calendar.current.component(.hour, from: Date())
+        return hour < 11
     }
 
     private func saveMoodEntry() {
