@@ -1,0 +1,80 @@
+{
+  "prompts": {
+    "mood_drop": [
+      "You seem down today. What's weighing on you?",
+      "Your energy feels lower. What's draining you?",
+      "Something shifted today. Want to talk about it?",
+      "What's making today harder than usual?",
+      "What's been on your mind that might be affecting your mood?"
+    ],
+    "mood_improved": [
+      "You seem brighter today! What helped?",
+      "Great energy today! What's different?",
+      "Nice turnaround! What changed?",
+      "Something's working well - what is it?",
+      "You're feeling better! What contributed to that?"
+    ],
+    "neutral": [
+      "What's the main thing affecting how you feel?",
+      "What's on your mind right now?",
+      "How are you really doing today?",
+      "What's one thing you're grateful for today?",
+      "What would make tomorrow better?"
+    ],
+    "activity_specific": {
+      "work": [
+        "What about work felt especially challenging?",
+        "Work today - what stood out?",
+        "How was the work situation today?",
+        "What made work feel this way today?"
+      ],
+      "exercise": [
+        "How did the workout feel?",
+        "Did exercise help or drain you today?",
+        "How's your body feeling after that?",
+        "What was different about exercising today?"
+      ],
+      "social_time": [
+        "How did social time feel today?",
+        "What was it like connecting with people?",
+        "Did social time energize or drain you?",
+        "What made social interaction feel this way?"
+      ],
+      "sleep": [
+        "How did you sleep last night?",
+        "Did your sleep quality affect today?",
+        "What influenced your sleep?",
+        "How are you feeling after that amount of sleep?"
+      ],
+      "therapy": [
+        "How was your therapy session?",
+        "What came up in therapy today?",
+        "Did therapy help today?",
+        "How are you processing what came up?"
+      ],
+      "meditation": [
+        "How did meditation feel today?",
+        "Were you able to settle into meditation?",
+        "What did you notice during meditation?",
+        "Did meditation help your mood?"
+      ]
+    },
+    "streak": {
+      "low_mood": [
+        "You've felt down for a few days. What's been on your mind?",
+        "This has been a rough stretch. What's been happening?",
+        "You've been struggling lately. Want to explore why?"
+      ],
+      "high_mood": [
+        "You've been feeling great! What's been going well?",
+        "This good streak is wonderful - what's contributing?",
+        "You've been on a roll! What's working for you?"
+      ]
+    },
+    "first_entry": [
+      "Welcome! How are you feeling today?",
+      "Let's start tracking. How's your mood right now?",
+      "First entry! What's your mood like today?"
+    ]
+  }
+}
