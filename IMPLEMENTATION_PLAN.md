@@ -85,28 +85,77 @@ MoodTrackerApp/
 
 ## NEXT PRIORITIES
 
-### PHASE 1: XCODE PROJECT SETUP [HIGH PRIORITY]
+### PHASE 1: IMPORT FRAMEWORK INTO EXISTING XCODE PROJECT [HIGH PRIORITY]
 **Blocking**: All subsequent work depends on this
+**Status**: Xcode project exists at `Moodly.xcodeproj`, needs framework files imported
+
+**Current State**:
+- ✅ Xcode project exists with SwiftData already configured
+- ✅ Template files: MoodlyApp.swift, ContentView.swift, Item.swift
+- ❌ Our framework files in `MoodTrackerApp/` directory not yet imported
+- ❌ Capabilities not yet configured
 
 **Tasks**:
-1. Create Xcode project with iOS 17.0 minimum deployment
-2. Add SwiftData capability
-3. Add iCloud CloudKit capability for sync
-4. Configure Info.plist for notifications (NSUserNotificationsUsageDescription)
-5. Configure app identifier and team
-6. Add all Swift files to project targets
-7. Add JSON files to bundle resources
-8. Update UserProfile model to add `preferredNotificationTime: Date?` property
-9. Test compilation and resolve any import/syntax errors
+1. **Import all framework files into Xcode project**:
+   - Delete template `Item.swift`
+   - Add all files from `MoodTrackerApp/` maintaining folder structure:
+     - App/ → replace existing MoodlyApp.swift and ContentView.swift
+     - Models/ (4 files)
+     - Views/ (10 files across subfolders)
+     - Analytics/ (4 files)
+     - Utilities/ (3 files)
+     - Resources/ (3 JSON files)
+   - Use "Add Files to Moodly..." and create folder references
 
-**Files to Import**:
-- All .swift files from MoodTrackerApp/
-- All .json files from MoodTrackerApp/Resources/
+2. **Update existing app files**:
+   - Replace content of `Moodly/MoodlyApp.swift` with `MoodTrackerApp/App/MoodTrackerApp.swift`
+   - Replace content of `Moodly/ContentView.swift` with `MoodTrackerApp/App/ContentView.swift`
+   - OR delete and re-add from MoodTrackerApp/App/
 
-**Build Settings**:
-- iOS Deployment Target: 17.0
-- Swift Language Version: 5.9+
-- Frameworks: SwiftUI, SwiftData, CloudKit, BackgroundTasks, UserNotifications
+3. **Add capabilities** (Project Settings → Signing & Capabilities):
+   - iCloud → CloudKit
+   - Background Modes → Background fetch + Remote notifications
+   - Push Notifications
+
+4. **Configure Info.plist**:
+   - Add key `NSUserNotificationsUsageDescription`
+   - Value: "Get daily reminders to check in and helpful mood insights"
+   - Add background modes (handled by capability above)
+   - Add permitted background task identifiers:
+     - `com.moodtracker.trigger-check`
+     - `com.moodtracker.analytics-refresh`
+
+5. **Update UserProfile model**:
+   - Add property: `var preferredNotificationTime: Date?`
+   - This enables notification time customization
+
+6. **Verify JSON files in bundle**:
+   - Check Build Phases → Copy Bundle Resources
+   - Should contain: Activities.json, OnboardingTemplates.json, Prompts.json
+
+7. **Test compilation**:
+   - Build project (⌘B) and resolve any errors
+   - Run in simulator - should show onboarding
+   - Verify SwiftData models work
+
+**What Currently Exists**:
+```
+Moodly/ (in Xcode)
+├── MoodlyApp.swift (template with Item model)
+├── ContentView.swift (template)
+├── Item.swift (template - DELETE)
+└── Assets.xcassets
+```
+
+**What We're Adding from MoodTrackerApp/**:
+```
+All files organized in folders:
+- Models/ (MoodEntry, UserProfile, ActivityCorrelation, Trigger)
+- Views/ (Onboarding, MoodEntry, Calendar, Analytics, Settings)
+- Analytics/ (CorrelationCalculator, PatternDetector, SuggestionEngine, TriggerManager)
+- Utilities/ (PromptGenerator, NotificationManager, Extensions)
+- Resources/ (3 JSON files)
+```
 
 ---
 
