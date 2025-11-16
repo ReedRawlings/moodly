@@ -54,6 +54,7 @@ MoodTrackerApp/
 ### Models Implementation Details
 - **MoodEntry**: Full implementation with mood (1-5), activities array, optional journal/sleep/energy
 - **UserProfile**: Goals, tracking categories, onboarding state, notification preferences
+  - ⚠️ TODO: Add `preferredNotificationTime: Date?` property for notification timing
 - **ActivityCorrelation**: Pre-computed analytics with avgMoodWith/Without, successRate, timesObserved
 - **Trigger**: Fired alert tracking with type, message, timestamp, dismissal state
 
@@ -95,7 +96,8 @@ MoodTrackerApp/
 5. Configure app identifier and team
 6. Add all Swift files to project targets
 7. Add JSON files to bundle resources
-8. Test compilation and resolve any import/syntax errors
+8. Update UserProfile model to add `preferredNotificationTime: Date?` property
+9. Test compilation and resolve any import/syntax errors
 
 **Files to Import**:
 - All .swift files from MoodTrackerApp/
@@ -115,22 +117,24 @@ MoodTrackerApp/
 1. Load OnboardingTemplates.json and populate goal recommendations dynamically
 2. Map goal selection to recommended categories from JSON
 3. Show educational tips during category selection
-4. Implement notification permission request (step 4 of onboarding)
-5. Create first entry tutorial overlay
-6. Add progress indicator (step X of 4)
+4. Implement notification permission request (step 4 of onboarding) with time customization
+5. Create first entry tutorial as full-screen slides - DECISION: Use slide approach, not overlays
+6. Add progress indicator (step X of 5, includes notification timing)
 7. Persist onboarding completion state correctly
+8. Add notification time picker (default 8pm, customizable in onboarding) - DECISION: In MVP
 
 **Current Gaps**:
 - GoalSelectionView uses hardcoded goals (should load from JSON)
 - CategorySelectionView uses placeholder categories (should map from goal)
-- No notification permission request step
-- No first entry tutorial
+- No notification permission request step with time picker
+- No first entry tutorial slides
 
 **Files to Modify**:
 - Views/Onboarding/GoalSelectionView.swift
 - Views/Onboarding/CategorySelectionView.swift
-- Create: Views/Onboarding/NotificationPermissionView.swift
-- Create: Views/Onboarding/FirstEntryTutorialView.swift
+- Create: Views/Onboarding/NotificationSetupView.swift (permission + time picker)
+- Create: Views/Onboarding/FirstEntryTutorialView.swift (slide-based tutorial)
+- Create: Utilities/JSONLoader.swift (helper for loading JSON resources)
 
 ---
 
@@ -188,10 +192,10 @@ MoodTrackerApp/
 
 **Remaining Work**:
 1. Wire CorrelationCalculator to InsightsView
-2. Trigger correlation calculation on app open if stale (>24 hours)
+2. Trigger correlation calculation on InsightsView.onAppear if stale (>24 hours) - DECISION: Use view appear
 3. Display top 3 performers with ActivityCorrelation data
 4. Wire PatternDetector and display detected patterns
-5. Add loading state during calculation
+5. Add loading state during calculation (async Task to avoid blocking UI)
 6. Implement weekly summary calculation
 7. Create WeeklyReportView content
 
@@ -231,17 +235,19 @@ MoodTrackerApp/
 
 ---
 
-### PHASE 7: DATA EXPORT [LOW PRIORITY]
-**Status**: Settings stub exists, needs implementation
+### PHASE 7: SETTINGS ENHANCEMENTS [LOW PRIORITY]
+**Status**: Basic settings exist, needs data export and notification customization
 
 **Required**:
-1. Query all MoodEntry entities
-2. Convert to CSV format: date, mood, activities, journal_text, sleep_hours, energy_level
-3. Present UIActivityViewController (share sheet)
-4. Allow save to Files or email
+1. Add notification time picker in Settings (editable post-onboarding)
+2. Update NotificationManager when time changes
+3. Query all MoodEntry entities for export
+4. Convert to CSV format: date, mood, activities, journal_text, sleep_hours, energy_level
+5. Present UIActivityViewController (share sheet)
+6. Allow save to Files or email
 
 **Files to Modify**:
-- Views/Settings/SettingsView.swift
+- Views/Settings/SettingsView.swift (add notification time picker, wire export)
 - Create: Utilities/DataExporter.swift
 
 ---
@@ -262,40 +268,85 @@ MoodTrackerApp/
 
 ---
 
-## LINGERING QUESTIONS
+## RESOLVED DECISIONS
 
-### Technical Decisions Required
-1. **iCloud Sync Strategy**: Spec says use `.automatic` CloudKit config - confirm this handles conflicts properly (last-write-wins acceptable for MVP?)
+### Technical Architecture - CONFIRMED
+1. **iCloud Sync Strategy**: ✅ Use `.automatic` CloudKit config with last-write-wins for MVP
+   - Implementation: SwiftData modelContainer with cloudKitContainerIdentifier
+   - Conflict resolution: Last write wins (acceptable for single-user app)
 
-2. **JSON Loading**: Activities.json, OnboardingTemplates.json, Prompts.json need loading mechanism - use Bundle.main.url or property wrapper? Create JSONLoader utility?
+2. **JSON Loading**: Create JSONLoader utility
+   - Implementation: Utilities/JSONLoader.swift with generic Bundle.main.decode method
+   - Usage: Load Activities.json, OnboardingTemplates.json, Prompts.json on demand
+   - Error handling: Graceful fallbacks if files missing
 
-3. **Background Task Testing**: Background tasks are hard to test in simulator - what's the testing strategy? Use Xcode's e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"identifier"]?
+3. **Correlation Recalculation Trigger**: ✅ InsightsView.onAppear with 24-hour staleness check
+   - Implementation: Check ActivityCorrelation.lastCalculated, recalc if > 24h
+   - Use async Task to avoid blocking UI
+   - Show loading state during calculation
 
-4. **Correlation Recalculation Trigger**: Spec says "recalculate on app open if > 24 hours" - where should this logic live? App launch? InsightsView.onAppear? Separate coordinator?
+4. **Background Task Testing**: Use Xcode debugger commands
+   - Testing approach: e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.moodtracker.trigger-check"]
+   - Document testing steps in code comments
+   - Manual testing on device for real-world validation
 
-5. **Past Entry Editing**: Spec says allow editing up to 7 days back - should this be a separate view or inline in calendar? How to prevent cheating/retroactive data manipulation?
+5. **Past Entry Editing**: Inline in calendar view
+   - Implementation: Tap calendar day → sheet with editable entry form
+   - Validation: Show edit option only for entries ≤ 7 days old
+   - No special anti-cheating measures for MVP (trust-based)
 
-### UX/Design Questions
-1. **Suggestion Display Timing**: Show suggestions immediately after mood ≤ 2 log, or on separate screen after save?
+### UX/Design - CONFIRMED
+1. **First Entry Tutorial**: ✅ Full-screen slide-based tutorial (not overlays)
+   - Implementation: TabView with 3-4 tutorial slides
+   - Show after onboarding completion, before first entry
+   - Can skip or swipe through
 
-2. **First Entry Tutorial**: Should this be interactive overlays, or full-screen tutorial slides? How intrusive?
+2. **Notification Timing**: ✅ Customizable in MVP
+   - Implementation: Time picker in NotificationSetupView during onboarding
+   - Default: 8pm
+   - Editable in Settings later
+   - Store in UserProfile.preferredNotificationTime (add property)
 
-3. **Calendar Navigation**: Swipe between months or use date picker header? Which is more intuitive for users?
+3. **Suggestion Display**: Show inline after save for mood ≤ 2
+   - Implementation: Conditional view below save button showing top 3 suggestions
+   - Use SuggestionEngine.generateSuggestions()
+   - Dismissible but not intrusive
 
-4. **Notification Timing**: Default daily reminder at 8pm - should this be customizable in MVP or wait for v2?
+4. **Calendar Navigation**: Swipe between months
+   - Implementation: TabView with calendar grids, swipeable
+   - Also include month/year header with tap to select date
+   - Best of both approaches
 
-5. **Empty States**: Spec doesn't define empty state UX for calendar when user has 0 entries - show prompts to log first entry?
+5. **Empty States**: Show encouraging prompt to log first entry
+   - Calendar: "Start tracking your moods to see patterns here"
+   - Insights: "Keep tracking! We need at least 10 entries" (already implemented)
+   - Actionable CTAs where appropriate
 
-### Feature Scope Clarifications
-1. **Activity Customization**: Spec mentions user can "add/remove categories" but no UI defined - is this in Settings or during onboarding only?
+### Feature Scope - DEFERRED TO v2
+1. **Activity Customization**: Onboarding only for MVP
+   - v1: Select from predefined list during onboarding
+   - v2: Add/remove in Settings with custom activity creation
 
-2. **Photo Attachments**: MoodEntryView has placeholder for "attach photos" in spec section 3.2 but not in models - is this Phase 1 or future?
+2. **Photo Attachments**: Defer to v2
+   - Not in Phase 1-8 scope
+   - Models don't support it yet
+   - Would require Photos framework integration
 
-3. **Streak Celebration Notification**: Spec says fire after 7 consecutive days - should this be in TriggerManager or separate logic?
+3. **Streak Celebration**: Add to TriggerManager as 5th trigger type
+   - Implementation: TriggerManager.checkPositiveStreak already exists
+   - Add streak celebration logic (7, 14, 30, 100 day milestones)
+   - Send notification via NotificationManager
 
-4. **Weekly Report Content**: WeeklyReportView placeholder exists but spec section 3.4 is vague on exact content - needs clarification
+4. **Weekly Report Content**: Follow spec section 3.4
+   - Week-over-week mood comparison
+   - Top 3 activities this week
+   - Detected patterns
+   - Personalized suggestion based on week's data
 
-5. **Data Cleanup**: Spec says "clean up Trigger entities older than 90 days" - when/where should this run?
+5. **Data Cleanup**: Weekly background task
+   - Implementation: Add cleanup to BGProcessingTask (Sunday 8pm task)
+   - Delete Trigger entities older than 90 days
+   - Keep MoodEntry data indefinitely (user owns their data)
 
 ---
 
