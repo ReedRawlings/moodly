@@ -1,0 +1,155 @@
+{
+  "templates": {
+    "reduce_stress": {
+      "goal_name": "Reduce stress and anxiety",
+      "description": "Track factors that influence stress levels",
+      "recommended_categories": [
+        "sleep",
+        "exercise",
+        "work_hours",
+        "caffeine",
+        "social_time",
+        "meditation"
+      ],
+      "educational_tips": [
+        {
+          "category": "sleep",
+          "tip": "Stress hormones increase when you get less than 6 hours"
+        },
+        {
+          "category": "exercise",
+          "tip": "Physical activity reduces cortisol by up to 40%"
+        },
+        {
+          "category": "meditation",
+          "tip": "Even 10 minutes daily can lower anxiety levels"
+        },
+        {
+          "category": "caffeine",
+          "tip": "Too much caffeine can amplify stress response"
+        }
+      ],
+      "initial_challenge": "gratitude_week"
+    },
+    "better_sleep": {
+      "goal_name": "Improve sleep quality",
+      "description": "Identify what helps you sleep better",
+      "recommended_categories": [
+        "sleep",
+        "caffeine",
+        "exercise",
+        "screen_time",
+        "alcohol",
+        "reading"
+      ],
+      "educational_tips": [
+        {
+          "category": "caffeine",
+          "tip": "Caffeine stays in your system for 6-8 hours"
+        },
+        {
+          "category": "screen_time",
+          "tip": "Blue light before bed disrupts melatonin production"
+        },
+        {
+          "category": "exercise",
+          "tip": "Regular exercise improves sleep quality by 65%"
+        },
+        {
+          "category": "alcohol",
+          "tip": "Alcohol may help you fall asleep but reduces sleep quality"
+        }
+      ],
+      "initial_challenge": "sleep_hygiene_week"
+    },
+    "understand_moods": {
+      "goal_name": "Understand mood swings",
+      "description": "Track patterns in your emotional state",
+      "recommended_categories": [
+        "sleep",
+        "social_time",
+        "work_hours",
+        "exercise",
+        "journaling",
+        "therapy"
+      ],
+      "educational_tips": [
+        {
+          "category": "sleep",
+          "tip": "Sleep deprivation affects emotional regulation"
+        },
+        {
+          "category": "social_time",
+          "tip": "Social connection is a strong predictor of wellbeing"
+        },
+        {
+          "category": "journaling",
+          "tip": "Writing helps process emotions and identify triggers"
+        }
+      ],
+      "initial_challenge": "mood_awareness_week"
+    },
+    "more_energy": {
+      "goal_name": "Increase energy levels",
+      "description": "Find what energizes you most",
+      "recommended_categories": [
+        "sleep",
+        "exercise",
+        "caffeine",
+        "nature",
+        "music",
+        "social_time"
+      ],
+      "educational_tips": [
+        {
+          "category": "sleep",
+          "tip": "7-9 hours is optimal for energy and alertness"
+        },
+        {
+          "category": "exercise",
+          "tip": "Movement increases energy even when you feel tired"
+        },
+        {
+          "category": "nature",
+          "tip": "20 minutes outside boosts energy and focus"
+        },
+        {
+          "category": "caffeine",
+          "tip": "Strategic caffeine use can help, but timing matters"
+        }
+      ],
+      "initial_challenge": "energy_boost_week"
+    },
+    "manage_condition": {
+      "goal_name": "Manage chronic condition",
+      "description": "Track triggers and helpful coping strategies",
+      "recommended_categories": [
+        "therapy",
+        "meditation",
+        "sleep",
+        "exercise",
+        "journaling",
+        "social_time"
+      ],
+      "educational_tips": [
+        {
+          "category": "therapy",
+          "tip": "Professional support provides tools for managing symptoms"
+        },
+        {
+          "category": "meditation",
+          "tip": "Mindfulness reduces symptoms of anxiety and depression"
+        },
+        {
+          "category": "exercise",
+          "tip": "Exercise is as effective as medication for mild-moderate depression"
+        },
+        {
+          "category": "sleep",
+          "tip": "Sleep disruption is both a symptom and trigger"
+        }
+      ],
+      "initial_challenge": "self_care_week"
+    }
+  }
+}

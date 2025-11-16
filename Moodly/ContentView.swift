@@ -8,54 +8,72 @@
 import SwiftUI
 import SwiftData
 
+/// Main navigation structure for the app
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+    @Query private var userProfiles: [UserProfile]
+
+    @State private var selectedTab = 0
 
     var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-                    }
+        Group {
+            if shouldShowOnboarding {
+                // Show onboarding flow if not completed
+                OnboardingContainerView()
+            } else {
+                // Show main tab navigation
+                TabView(selection: $selectedTab) {
+                    MoodEntryView()
+                        .tabItem {
+                            Label("Entry", systemImage: "face.smiling")
+                        }
+                        .tag(0)
+
+                    CalendarView()
+                        .tabItem {
+                            Label("Calendar", systemImage: "calendar")
+                        }
+                        .tag(1)
+
+                    InsightsView()
+                        .tabItem {
+                            Label("Insights", systemImage: "chart.bar")
+                        }
+                        .tag(2)
+
+                    SettingsView()
+                        .tabItem {
+                            Label("Settings", systemImage: "gear")
+                        }
+                        .tag(3)
                 }
-                .onDelete(perform: deleteItems)
             }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
-            }
-        } detail: {
-            Text("Select an item")
         }
     }
 
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
+    /// Check if user has completed onboarding
+    private var shouldShowOnboarding: Bool {
+        guard let profile = userProfiles.first else {
+            // No profile exists, need onboarding
+            return true
         }
+        return !profile.onboardingCompleted
     }
+}
 
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
-            }
-        }
+/// Temporary placeholder for onboarding container
+struct OnboardingContainerView: View {
+    var body: some View {
+        WelcomeView()
     }
 }
 
 #Preview {
     ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
+        .modelContainer(for: [
+            MoodEntry.self,
+            UserProfile.self,
+            ActivityCorrelation.self,
+            Trigger.self
+        ], inMemory: true)
 }

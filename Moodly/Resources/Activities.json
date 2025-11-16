@@ -1,0 +1,204 @@
+{
+  "activities": [
+    {
+      "id": "exercise",
+      "name": "Exercise",
+      "icon": "figure.run",
+      "category": "health",
+      "typical_duration": 30,
+      "recommended_for_goals": ["reduce_stress", "more_energy", "better_sleep"]
+    },
+    {
+      "id": "sleep",
+      "name": "Sleep",
+      "icon": "bed.double",
+      "category": "health",
+      "typical_duration": 480,
+      "recommended_for_goals": ["better_sleep", "more_energy", "reduce_stress"]
+    },
+    {
+      "id": "meditation",
+      "name": "Meditation",
+      "icon": "brain.head.profile",
+      "category": "health",
+      "typical_duration": 15,
+      "recommended_for_goals": ["reduce_stress", "manage_condition"]
+    },
+    {
+      "id": "yoga",
+      "name": "Yoga",
+      "icon": "figure.yoga",
+      "category": "health",
+      "typical_duration": 45,
+      "recommended_for_goals": ["reduce_stress", "better_sleep"]
+    },
+    {
+      "id": "social_time",
+      "name": "Social Time",
+      "icon": "person.2",
+      "category": "social",
+      "typical_duration": 60,
+      "recommended_for_goals": ["reduce_stress", "understand_moods"]
+    },
+    {
+      "id": "friends",
+      "name": "Friends",
+      "icon": "person.3",
+      "category": "social",
+      "typical_duration": 90,
+      "recommended_for_goals": ["reduce_stress", "understand_moods"]
+    },
+    {
+      "id": "family",
+      "name": "Family",
+      "icon": "house",
+      "category": "social",
+      "typical_duration": 120,
+      "recommended_for_goals": ["reduce_stress", "understand_moods"]
+    },
+    {
+      "id": "partner",
+      "name": "Partner",
+      "icon": "heart",
+      "category": "social",
+      "typical_duration": 90,
+      "recommended_for_goals": ["reduce_stress", "understand_moods"]
+    },
+    {
+      "id": "work_hours",
+      "name": "Work Hours",
+      "icon": "briefcase",
+      "category": "work",
+      "typical_duration": 480,
+      "recommended_for_goals": ["reduce_stress", "understand_moods"]
+    },
+    {
+      "id": "meetings",
+      "name": "Meetings",
+      "icon": "person.2.square.stack",
+      "category": "work",
+      "typical_duration": 60,
+      "recommended_for_goals": ["reduce_stress", "understand_moods"]
+    },
+    {
+      "id": "deadlines",
+      "name": "Deadlines",
+      "icon": "clock.badge.exclamationmark",
+      "category": "work",
+      "typical_duration": 120,
+      "recommended_for_goals": ["reduce_stress", "understand_moods"]
+    },
+    {
+      "id": "caffeine",
+      "name": "Caffeine",
+      "icon": "cup.and.saucer",
+      "category": "lifestyle",
+      "typical_duration": 5,
+      "recommended_for_goals": ["better_sleep", "more_energy"]
+    },
+    {
+      "id": "alcohol",
+      "name": "Alcohol",
+      "icon": "wineglass",
+      "category": "lifestyle",
+      "typical_duration": 60,
+      "recommended_for_goals": ["better_sleep", "understand_moods"]
+    },
+    {
+      "id": "screen_time",
+      "name": "Screen Time",
+      "icon": "iphone",
+      "category": "lifestyle",
+      "typical_duration": 120,
+      "recommended_for_goals": ["better_sleep", "reduce_stress"]
+    },
+    {
+      "id": "nature",
+      "name": "Nature",
+      "icon": "leaf",
+      "category": "lifestyle",
+      "typical_duration": 45,
+      "recommended_for_goals": ["reduce_stress", "more_energy"]
+    },
+    {
+      "id": "reading",
+      "name": "Reading",
+      "icon": "book",
+      "category": "creative",
+      "typical_duration": 30,
+      "recommended_for_goals": ["reduce_stress", "better_sleep"]
+    },
+    {
+      "id": "music",
+      "name": "Music",
+      "icon": "music.note",
+      "category": "creative",
+      "typical_duration": 30,
+      "recommended_for_goals": ["reduce_stress", "more_energy"]
+    },
+    {
+      "id": "art",
+      "name": "Art",
+      "icon": "paintbrush",
+      "category": "creative",
+      "typical_duration": 60,
+      "recommended_for_goals": ["reduce_stress", "understand_moods"]
+    },
+    {
+      "id": "writing",
+      "name": "Writing",
+      "icon": "pencil",
+      "category": "creative",
+      "typical_duration": 30,
+      "recommended_for_goals": ["reduce_stress", "understand_moods"]
+    },
+    {
+      "id": "therapy",
+      "name": "Therapy",
+      "icon": "heart.text.square",
+      "category": "self_care",
+      "typical_duration": 60,
+      "recommended_for_goals": ["manage_condition", "understand_moods"]
+    },
+    {
+      "id": "journaling",
+      "name": "Journaling",
+      "icon": "book.pages",
+      "category": "self_care",
+      "typical_duration": 20,
+      "recommended_for_goals": ["reduce_stress", "understand_moods", "manage_condition"]
+    },
+    {
+      "id": "hobbies",
+      "name": "Hobbies",
+      "icon": "star",
+      "category": "self_care",
+      "typical_duration": 60,
+      "recommended_for_goals": ["reduce_stress", "more_energy"]
+    },
+    {
+      "id": "cooking",
+      "name": "Cooking",
+      "icon": "fork.knife",
+      "category": "self_care",
+      "typical_duration": 45,
+      "recommended_for_goals": ["reduce_stress"]
+    },
+    {
+      "id": "gaming",
+      "name": "Gaming",
+      "icon": "gamecontroller",
+      "category": "creative",
+      "typical_duration": 90,
+      "recommended_for_goals": ["reduce_stress"]
+    },
+    {
+      "id": "pet_time",
+      "name": "Pet Time",
+      "icon": "pawprint",
+      "category": "social",
+      "typical_duration": 30,
+      "recommended_for_goals": ["reduce_stress", "more_energy"]
+    }
+  ]
+}

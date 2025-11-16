@@ -5,6 +5,14 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
+		<string>fetch</string>
+	</array>
+	<key>NSUserNotificationsUsageDescription</key>
+	<string>Moodly sends daily reminders to help you track your mood and identify patterns.</string>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.moodly.refresh</string>
+		<string>com.moodly.analysis</string>
 	</array>
 </dict>
 </plist>
