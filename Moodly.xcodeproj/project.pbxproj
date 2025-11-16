@@ -6,8 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		741C97B02EC9753F00753A52 /* implementationdoc.md in Resources */ = {isa = PBXBuildFile; fileRef = 741C97AF2EC9751E00753A52 /* implementationdoc.md */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		741C979C2EC973BE00753A52 /* Moodly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Moodly.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		741C97AF2EC9751E00753A52 /* implementationdoc.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = implementationdoc.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -45,6 +50,7 @@
 		741C97932EC973BE00753A52 = {
 			isa = PBXGroup;
 			children = (
+				741C97AF2EC9751E00753A52 /* implementationdoc.md */,
 				741C979E2EC973BE00753A52 /* Moodly */,
 				741C979D2EC973BE00753A52 /* Products */,
 			);
@@ -122,6 +128,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				741C97B02EC9753F00753A52 /* implementationdoc.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
