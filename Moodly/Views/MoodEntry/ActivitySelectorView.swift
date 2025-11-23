@@ -6,7 +6,7 @@ struct ActivitySelectorView: View {
     @Binding var selectedActivities: Set<String>
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 8) {
             Text("Activities")
                 .font(.headline)
                 .padding(.horizontal)
@@ -15,7 +15,7 @@ struct ActivitySelectorView: View {
                 GridItem(.flexible()),
                 GridItem(.flexible()),
                 GridItem(.flexible())
-            ], spacing: 12) {
+            ], spacing: 8) {
                 ForEach(trackingCategories, id: \.self) { activity in
                     ActivityButton(
                         activity: activity,
@@ -53,7 +53,7 @@ struct ActivityButton: View {
                     .lineLimit(2)
             }
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 12)
+            .padding(.vertical, 8)
             .background(
                 RoundedRectangle(cornerRadius: 10)
                     .fill(isSelected ? Color.blue.opacity(0.1) : Color.gray.opacity(0.05))

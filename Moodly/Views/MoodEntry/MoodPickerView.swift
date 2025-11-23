@@ -13,7 +13,7 @@ struct MoodPickerView: View {
     ]
 
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 10) {
             Text("How are you feeling?")
                 .font(.title2)
                 .fontWeight(.bold)
@@ -55,7 +55,7 @@ struct MoodButton: View {
                     .foregroundStyle(.primary)
             }
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 12)
+            .padding(.vertical, 8)
             .background(
                 RoundedRectangle(cornerRadius: 12)
                     .fill(isSelected ? color.opacity(0.3) : Color.clear)

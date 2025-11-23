@@ -16,7 +16,7 @@ struct MoodEntryView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 28) {
+                VStack(spacing: 16) {
                     // HERO: Mood Picker - Most important
                     MoodPickerView(selectedMood: $selectedMood)
 
@@ -146,7 +146,8 @@ struct MoodEntryView: View {
                     .padding(.horizontal)
                     .padding(.top, 8)
                 }
-                .padding(.vertical)
+                .padding(.top, 12)
+                .padding(.bottom, 8)
             }
             .navigationTitle("Check In")
         }
