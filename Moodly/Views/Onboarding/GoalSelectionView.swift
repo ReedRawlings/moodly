@@ -3,13 +3,15 @@ import SwiftUI
 /// Goal selection view - user picks primary reason for using app
 struct GoalSelectionView: View {
     @State private var selectedGoal: String?
+    @State private var templates: [String: OnboardingTemplate] = [:]
 
-    private let goals = [
-        ("reduce_stress", "Reduce stress and anxiety", "wind"),
-        ("better_sleep", "Improve sleep quality", "bed.double"),
-        ("understand_moods", "Understand mood swings", "brain.head.profile"),
-        ("more_energy", "Increase energy levels", "bolt.fill"),
-        ("manage_condition", "Manage chronic condition", "heart.text.square")
+    // Icon mapping for each goal
+    private let goalIcons: [String: String] = [
+        "reduce_stress": "wind",
+        "better_sleep": "bed.double",
+        "understand_moods": "brain.head.profile",
+        "more_energy": "bolt.fill",
+        "manage_condition": "heart.text.square"
     ]
 
     var body: some View {
@@ -27,14 +29,18 @@ struct GoalSelectionView: View {
 
             ScrollView {
                 VStack(spacing: 12) {
-                    ForEach(goals, id: \.0) { goal in
-                        GoalOption(
-                            id: goal.0,
-                            title: goal.1,
-                            icon: goal.2,
-                            isSelected: selectedGoal == goal.0
-                        ) {
-                            selectedGoal = goal.0
+                    ForEach(Array(templates.keys.sorted()), id: \.self) { goalId in
+                        if let template = templates[goalId],
+                           let icon = goalIcons[goalId] {
+                            GoalOption(
+                                id: goalId,
+                                title: template.goalName,
+                                description: template.description,
+                                icon: icon,
+                                isSelected: selectedGoal == goalId
+                            ) {
+                                selectedGoal = goalId
+                            }
                         }
                     }
                 }
@@ -42,7 +48,13 @@ struct GoalSelectionView: View {
             }
 
             NavigationLink {
-                CategorySelectionView(selectedGoal: selectedGoal ?? "reduce_stress")
+                if let goalId = selectedGoal,
+                   let template = templates[goalId] {
+                    CategorySelectionView(
+                        selectedGoal: goalId,
+                        template: template
+                    )
+                }
             } label: {
                 Text("Continue")
                     .font(.headline)
@@ -56,8 +68,26 @@ struct GoalSelectionView: View {
             .padding(.horizontal, 32)
             .padding(.bottom, 32)
         }
-        .navigationTitle("Step 1 of 3")
+        .navigationTitle("Step 2 of 5")
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            loadTemplates()
+        }
+    }
+
+    private func loadTemplates() {
+        if let data = JSONLoader.load("OnboardingTemplates", as: OnboardingTemplatesData.self).value {
+            templates = data.templates
+        }
+    }
+}
+
+extension Result {
+    var value: Success? {
+        if case .success(let value) = self {
+            return value
+        }
+        return nil
     }
 }
 
@@ -65,6 +95,7 @@ struct GoalSelectionView: View {
 struct GoalOption: View {
     let id: String
     let title: String
+    let description: String
     let icon: String
     let isSelected: Bool
     let action: () -> Void
@@ -75,10 +106,19 @@ struct GoalOption: View {
                 Image(systemName: icon)
                     .font(.title2)
                     .foregroundStyle(isSelected ? .blue : .secondary)
+                    .frame(width: 32)
 
-                Text(title)
-                    .font(.body)
-                    .foregroundStyle(.primary)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(title)
+                        .font(.body)
+                        .fontWeight(.medium)
+                        .foregroundStyle(.primary)
+
+                    Text(description)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                }
 
                 Spacer()
 

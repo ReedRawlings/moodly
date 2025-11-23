@@ -38,6 +38,9 @@ struct WelcomeView: View {
                 .padding(.horizontal, 32)
                 .padding(.bottom, 32)
             }
+            .navigationTitle("Step 1 of 5")
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
         }
     }
 }

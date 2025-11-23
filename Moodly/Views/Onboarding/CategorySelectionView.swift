@@ -7,14 +7,11 @@ struct CategorySelectionView: View {
     @Environment(\.dismiss) private var dismiss
 
     let selectedGoal: String
+    let template: OnboardingTemplate
 
     @State private var selectedCategories: Set<String> = []
-
-    // Placeholder recommended categories (should be loaded from OnboardingTemplates.json)
-    private let recommendedCategories = [
-        "sleep", "exercise", "work_hours",
-        "caffeine", "social_time", "meditation"
-    ]
+    @State private var activities: [Activity] = []
+    @State private var showTip: String?
 
     var body: some View {
         VStack(spacing: 24) {
@@ -29,20 +26,35 @@ struct CategorySelectionView: View {
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
 
+            // Educational tip display
+            if let tip = showTip {
+                HStack(spacing: 12) {
+                    Image(systemName: "lightbulb.fill")
+                        .foregroundStyle(.yellow)
+                    Text(tip)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                }
+                .padding()
+                .background(Color.yellow.opacity(0.1))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .padding(.horizontal)
+            }
+
             ScrollView {
                 LazyVGrid(columns: [
                     GridItem(.flexible()),
                     GridItem(.flexible())
                 ], spacing: 12) {
-                    ForEach(recommendedCategories, id: \.self) { category in
-                        CategoryCard(
-                            category: category,
-                            isSelected: selectedCategories.contains(category)
-                        ) {
-                            if selectedCategories.contains(category) {
-                                selectedCategories.remove(category)
-                            } else {
-                                selectedCategories.insert(category)
+                    ForEach(template.recommendedCategories, id: \.self) { categoryId in
+                        if let activity = activities.first(where: { $0.id == categoryId }) {
+                            CategoryCard(
+                                activity: activity,
+                                isSelected: selectedCategories.contains(categoryId),
+                                tip: template.educationalTips.first(where: { $0.category == categoryId })?.tip
+                            ) {
+                                toggleCategory(categoryId)
                             }
                         }
                     }
@@ -50,10 +62,13 @@ struct CategorySelectionView: View {
                 .padding(.horizontal)
             }
 
-            Button {
-                completeOnboarding()
+            NavigationLink {
+                NotificationSetupView(
+                    selectedGoal: selectedGoal,
+                    selectedCategories: Array(selectedCategories)
+                )
             } label: {
-                Text("Complete Setup")
+                Text("Continue")
                     .font(.headline)
                     .frame(maxWidth: .infinity)
                     .padding()
@@ -65,45 +80,70 @@ struct CategorySelectionView: View {
             .padding(.horizontal, 32)
             .padding(.bottom, 32)
         }
-        .navigationTitle("Step 2 of 3")
+        .navigationTitle("Step 3 of 5")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
+            loadActivities()
             // Pre-select all recommended categories
-            selectedCategories = Set(recommendedCategories)
+            selectedCategories = Set(template.recommendedCategories)
         }
     }
 
-    private func completeOnboarding() {
-        // Create user profile
-        let profile = UserProfile(
-            goals: [selectedGoal],
-            trackingCategories: Array(selectedCategories),
-            onboardingCompleted: true,
-            notificationsEnabled: false
-        )
-        modelContext.insert(profile)
+    private func loadActivities() {
+        if let data = JSONLoader.load("Activities", as: ActivitiesData.self).value {
+            activities = data.activities
+        }
+    }
 
-        // Save context
-        try? modelContext.save()
+    private func toggleCategory(_ categoryId: String) {
+        if selectedCategories.contains(categoryId) {
+            selectedCategories.remove(categoryId)
+            showTip = nil
+        } else {
+            selectedCategories.insert(categoryId)
+            // Show tip when selecting
+            if let tip = template.educationalTips.first(where: { $0.category == categoryId })?.tip {
+                showTip = tip
+                // Hide tip after 3 seconds
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                    if showTip == tip {
+                        showTip = nil
+                    }
+                }
+            }
+        }
     }
 }
 
 /// Single category card
 struct CategoryCard: View {
-    let category: String
+    let activity: Activity
     let isSelected: Bool
+    let tip: String?
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
             VStack(spacing: 8) {
-                Image(systemName: iconForCategory(category))
-                    .font(.title)
-                    .foregroundStyle(isSelected ? .blue : .secondary)
+                ZStack(alignment: .topTrailing) {
+                    Image(systemName: activity.icon)
+                        .font(.title)
+                        .foregroundStyle(isSelected ? .blue : .secondary)
+                        .frame(maxWidth: .infinity)
 
-                Text(category.capitalized)
+                    // Show info icon if there's a tip
+                    if tip != nil {
+                        Image(systemName: "info.circle.fill")
+                            .font(.caption2)
+                            .foregroundStyle(.yellow)
+                            .offset(x: 8, y: -8)
+                    }
+                }
+
+                Text(activity.name)
                     .font(.caption)
                     .foregroundStyle(.primary)
+                    .lineLimit(1)
             }
             .frame(maxWidth: .infinity)
             .padding()
@@ -115,18 +155,6 @@ struct CategoryCard: View {
                 RoundedRectangle(cornerRadius: 12)
                     .stroke(isSelected ? Color.blue : Color.gray.opacity(0.3), lineWidth: 2)
             )
-        }
-    }
-
-    private func iconForCategory(_ category: String) -> String {
-        switch category {
-        case "sleep": return "bed.double"
-        case "exercise": return "figure.run"
-        case "work_hours": return "briefcase"
-        case "caffeine": return "cup.and.saucer"
-        case "social_time": return "person.2"
-        case "meditation": return "brain.head.profile"
-        default: return "circle"
         }
     }
 }
